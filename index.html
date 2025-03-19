@@ -6,8 +6,11 @@
     <title>Deferred Mortgage Calculator</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
-        .container { max-width: 400px; margin: auto; }
+        .container { max-width: 600px; margin: auto; }
         input, button { display: block; width: 100%; margin: 10px 0; padding: 8px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid black; padding: 8px; text-align: center; }
+        th { background-color: #f2f2f2; }
     </style>
 </head>
 <body>
@@ -28,12 +31,38 @@
         <button onclick="calculateMortgage()">Calculate</button>
         
         <h3>Results:</h3>
-        <p>Monthly Payment (With Deferment): <span id="monthlyPayment"></span></p>
-        <p>Monthly Payment (No Deferment): <span id="monthlyPaymentNoDefer"></span></p>
-        <p>Interest Accrued During Deferral: <span id="accruedInterest"></span></p>
-        <p>Total Amount Paid (With Deferment): <span id="totalPaid"></span></p>
-        <p>Total Amount Paid (No Deferment): <span id="totalPaidNoDefer"></span></p>
-        <p>Additional Cost Due to Deferment: <span id="extraCost"></span></p>
+        <table>
+            <tr>
+                <th></th>
+                <th>Original</th>
+                <th>Deferred</th>
+            </tr>
+            <tr>
+                <td>Loan Amount</td>
+                <td id="loanAmountNoDefer"></td>
+                <td id="loanAfterDeferment"></td>
+            </tr>
+            <tr>
+                <td>Monthly Payment</td>
+                <td id="monthlyPaymentNoDefer"></td>
+                <td id="monthlyPayment"></td>
+            </tr>
+            <tr>
+                <td>Interest Paid</td>
+                <td id="totalInterestNoDefer"></td>
+                <td id="totalInterest"></td>
+            </tr>
+            <tr>
+                <td>Total Amount Paid</td>
+                <td id="totalPaidNoDefer"></td>
+                <td id="totalPaid"></td>
+            </tr>
+            <tr>
+                <td>Additional Cost Due to Deferment</td>
+                <td>-</td>
+                <td id="extraCost"></td>
+            </tr>
+        </table>
     </div>
 
     <script>
@@ -56,18 +85,23 @@
             }
             
             // Loan after deferment
-            let loanAfterDeferment = loanAmount + accruedInterest;
             let remainingMonths = totalMonths - deferMonths;
+            let loanAfterDeferment = tempLoanAmount;
             let monthlyPayment = (loanAfterDeferment * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -remainingMonths));
-            
             let monthlyPaymentNoDefer = (loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -totalMonths));
+            
             let totalPaid = monthlyPayment * remainingMonths;
             let totalPaidNoDefer = monthlyPaymentNoDefer * totalMonths;
             let extraCost = totalPaid - totalPaidNoDefer;
+            let totalInterestNoDefer = totalPaidNoDefer - loanAmount;
+            let totalInterest = totalPaid - loanAfterDeferment;
 
+            document.getElementById("loanAmountNoDefer").textContent = `$${loanAmount.toFixed(2)}`;
+            document.getElementById("loanAfterDeferment").textContent = `$${loanAfterDeferment.toFixed(2)}`;
             document.getElementById("monthlyPayment").textContent = `$${monthlyPayment.toFixed(2)}`;
             document.getElementById("monthlyPaymentNoDefer").textContent = `$${monthlyPaymentNoDefer.toFixed(2)}`;
-            document.getElementById("accruedInterest").textContent = `$${accruedInterest.toFixed(2)}`;
+            document.getElementById("totalInterest").textContent = `$${totalInterest.toFixed(2)}`;
+            document.getElementById("totalInterestNoDefer").textContent = `$${totalInterestNoDefer.toFixed(2)}`;
             document.getElementById("totalPaid").textContent = `$${totalPaid.toFixed(2)}`;
             document.getElementById("totalPaidNoDefer").textContent = `$${totalPaidNoDefer.toFixed(2)}`;
             document.getElementById("extraCost").textContent = `$${extraCost.toFixed(2)}`;
