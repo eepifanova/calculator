@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deferred Mortgage Calculator</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 400px; margin: auto; }
+        input, button { display: block; width: 100%; margin: 10px 0; padding: 8px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Deferred Mortgage Calculator</h2>
+        <label>Loan Amount ($):</label>
+        <input type="number" id="loanAmount" value="200000">
+        
+        <label>Annual Interest Rate (%):</label>
+        <input type="number" id="interestRate" value="5">
+        
+        <label>Loan Term (Years):</label>
+        <input type="number" id="loanTerm" value="30">
+        
+        <label>Deferred Period (Months):</label>
+        <input type="number" id="deferPeriod" value="12">
+        
+        <button onclick="calculateMortgage()">Calculate</button>
+        
+        <h3>Results:</h3>
+        <p>Monthly Payment (With Deferment): <span id="monthlyPayment"></span></p>
+        <p>Monthly Payment (No Deferment): <span id="monthlyPaymentNoDefer"></span></p>
+        <p>Interest Accrued During Deferral: <span id="accruedInterest"></span></p>
+        <p>Total Amount Paid (With Deferment): <span id="totalPaid"></span></p>
+        <p>Total Amount Paid (No Deferment): <span id="totalPaidNoDefer"></span></p>
+        <p>Additional Cost Due to Deferment: <span id="extraCost"></span></p>
+    </div>
+
+    <script>
+        function calculateMortgage() {
+            let loanAmount = parseFloat(document.getElementById("loanAmount").value);
+            let annualRate = parseFloat(document.getElementById("interestRate").value) / 100;
+            let loanTermYears = parseFloat(document.getElementById("loanTerm").value);
+            let deferMonths = parseInt(document.getElementById("deferPeriod").value);
+
+            let monthlyRate = annualRate / 12;
+            let totalMonths = loanTermYears * 12;
+            
+            // Interest accrued during deferment
+            let accruedInterest = 0;
+            let tempLoanAmount = loanAmount;
+            for (let i = 0; i < deferMonths; i++) {
+                let interestForMonth = tempLoanAmount * monthlyRate;
+                accruedInterest += interestForMonth;
+                tempLoanAmount += interestForMonth;
+            }
+            
+            // Loan after deferment
+            let loanAfterDeferment = loanAmount + accruedInterest;
+            let remainingMonths = totalMonths - deferMonths;
+            let monthlyPayment = (loanAfterDeferment * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -remainingMonths));
+            
+            let monthlyPaymentNoDefer = (loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -totalMonths));
+            let totalPaid = monthlyPayment * remainingMonths;
+            let totalPaidNoDefer = monthlyPaymentNoDefer * totalMonths;
+            let extraCost = totalPaid - totalPaidNoDefer;
+
+            document.getElementById("monthlyPayment").textContent = `$${monthlyPayment.toFixed(2)}`;
+            document.getElementById("monthlyPaymentNoDefer").textContent = `$${monthlyPaymentNoDefer.toFixed(2)}`;
+            document.getElementById("accruedInterest").textContent = `$${accruedInterest.toFixed(2)}`;
+            document.getElementById("totalPaid").textContent = `$${totalPaid.toFixed(2)}`;
+            document.getElementById("totalPaidNoDefer").textContent = `$${totalPaidNoDefer.toFixed(2)}`;
+            document.getElementById("extraCost").textContent = `$${extraCost.toFixed(2)}`;
+        }
+    </script>
+
+    <footer>
+        <p>Wrote by ChatGPT - <a href="https://openai.com/chatgpt" target="_blank">Visit ChatGPT</a></p>
+    </footer>
+</body>
+</html>
