@@ -94,7 +94,7 @@
             let totalPaidNoDefer = monthlyPaymentNoDefer * totalMonths;
             let extraCost = totalPaid - totalPaidNoDefer;
             let totalInterestNoDefer = totalPaidNoDefer - loanAmount;
-            let totalInterest = totalPaid - loanAfterDeferment;
+            let totalInterest = totalPaid - loanAmount;
 
             document.getElementById("loanAmountNoDefer").textContent = `$${loanAmount.toFixed(2)}`;
             document.getElementById("loanAfterDeferment").textContent = `$${loanAfterDeferment.toFixed(2)}`;
